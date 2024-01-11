@@ -83,6 +83,8 @@ public class BookServiceImpl implements BookService {
     public void deleteBook(Long id) {
         BookEntity book = bookRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("Book not found"));
+        if(!book.getBorrowedBooks().isEmpty())
+            throw new ValidationException("Book deletion failed as book is currently borrowed");
         bookRepository.delete(book);
 
     }
