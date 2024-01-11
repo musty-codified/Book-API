@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(userDto.getLastName())
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .roles(Roles.ROLE_USER.getAuthorities().stream().map(Objects::toString
-                ).collect(Collectors.joining(",")))
+                ).collect(Collectors.joining(" , ")))
                 .uuid(appUtil.generateSerialNumber("usr"))
                 .build();
 

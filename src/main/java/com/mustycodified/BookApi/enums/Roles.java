@@ -8,7 +8,7 @@ import static com.mustycodified.BookApi.enums.Authorities.*;
 
 
 public enum Roles {
-    ROLE_USER(Sets.newHashSet(USER_READ, USER_EDIT, BOOK_READ)),
+    ROLE_USER(Sets.newHashSet(USER_EDIT, BOOK_READ, BOOK_BORROW, BOOK_RETURN)),
     ROLE_AUTHOR(Sets.newHashSet(USER_READ, USER_EDIT, BOOK_READ, BOOK_EDIT));
 
 

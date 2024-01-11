@@ -38,7 +38,7 @@ public class BookController {
         return ResponseEntity.ok().body( new ApiResponse<>("Success", true, bookService.getAllBooks()));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<ApiResponse<BookResponseDto>> deleteBook(@PathVariable Long id){
         bookService.deleteBook(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

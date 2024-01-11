@@ -1,5 +1,6 @@
 package com.mustycodified.BookApi.security;
 
+import com.mustycodified.BookApi.enums.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -28,9 +32,8 @@ public class WebSecurity {
 
     private static final String [] WHITE_LISTED_URLS = {
             "/",
-            "/api/v1/auth/login",
-            "/api/v1/users/**",
-            "/api/v1/books/**",
+            "/api/v1/auth/**",
+            "/api/v1/users/register",
             "/h2-console/**",
             "/v3/api-docs/**",
             "/configuration/**",
@@ -45,6 +48,10 @@ public class WebSecurity {
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers(WHITE_LISTED_URLS).permitAll()
+                .antMatchers( "/api/v1/books/borrow/**", "/api/v1/books/return/**" )
+                .hasAnyRole("USER")
+                .antMatchers("/api/v1/books/edit/**", "/api/v1/books/delete/**", "/api/v1/books/add/**")
+                .hasAnyRole("AUTHOR")
                 .anyRequest()
                 .authenticated()
                 .and()
