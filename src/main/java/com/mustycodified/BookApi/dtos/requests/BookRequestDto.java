@@ -3,6 +3,8 @@ package com.mustycodified.BookApi.dtos.requests;
 
 import lombok.*;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
@@ -20,6 +22,7 @@ public class BookRequestDto {
     @NotBlank
     private String author;
 
-    @NotEmpty
+    @Min(1)
+    @Max(10)
     private int quantity;
 }

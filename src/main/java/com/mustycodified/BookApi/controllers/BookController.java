@@ -43,4 +43,9 @@ public class BookController {
         bookService.deleteBook(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("/borrow/{bookId}/{userId}")
+    public ResponseEntity<ApiResponse<BookResponseDto>> borrowBook( @PathVariable Long bookId, @PathVariable Long userId){
+        return ResponseEntity.ok().body( new ApiResponse<>("Success", true, bookService.borrowBook(bookId, userId)));
+    }
 }

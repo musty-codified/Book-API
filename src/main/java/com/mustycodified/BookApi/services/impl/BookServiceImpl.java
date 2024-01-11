@@ -3,13 +3,20 @@ package com.mustycodified.BookApi.services.impl;
 import com.mustycodified.BookApi.dtos.requests.BookRequestDto;
 import com.mustycodified.BookApi.dtos.response.BookResponseDto;
 import com.mustycodified.BookApi.entities.BookEntity;
+import com.mustycodified.BookApi.entities.BorrowedBookEntity;
+import com.mustycodified.BookApi.entities.UserEntity;
 import com.mustycodified.BookApi.enums.BookStatus;
+import com.mustycodified.BookApi.enums.BorrowedBookStatus;
 import com.mustycodified.BookApi.exceptions.NotFoundException;
+import com.mustycodified.BookApi.exceptions.UnavailableException;
 import com.mustycodified.BookApi.exceptions.ValidationException;
 import com.mustycodified.BookApi.repositories.BookRepository;
+import com.mustycodified.BookApi.repositories.BorrowedBookRepository;
+import com.mustycodified.BookApi.repositories.UserRepository;
 import com.mustycodified.BookApi.services.BookService;
 import com.mustycodified.BookApi.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +30,9 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AppUtils appUtil;
 
+    private final UserRepository userRepository;
+
+    private final BorrowedBookRepository borrowedBookRepository;
     @Override
     public List<BookResponseDto> getAllBooks() {
      List<BookEntity> books = bookRepository.findAll();
@@ -78,12 +88,36 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void borrowBook(String isbn, String borrowerName) {
+    public BookResponseDto borrowBook(Long bookId, Long userId) {
+       BookEntity bookEntity = bookRepository.findById(bookId)
+               .orElseThrow(()-> new NotFoundException("Book not found"));
+
+
+       if (bookEntity.getQuantity() <= 0)
+           throw new UnavailableException("Book is not available at the moment");
+
+       BorrowedBookEntity borrowedBook = createBorrowedBook(bookEntity, userId);
+       borrowedBookRepository.save(borrowedBook);
+       bookEntity.setQuantity(bookEntity.getQuantity() - 1);
+      BookEntity updatedBookEntity = bookRepository.save(bookEntity);
+
+        return appUtil.getMapper().convertValue(updatedBookEntity, BookResponseDto.class);
+    }
+
+    private BorrowedBookEntity createBorrowedBook(BookEntity book, Long userId) {
+     UserEntity user = userRepository.findById(userId)
+             .orElseThrow(()-> new NotFoundException("User not found"));
+       return BorrowedBookEntity.builder()
+                .user(user)
+                .bookEntity(book)
+                .borrowedBookStatus(BorrowedBookStatus.BORROWED.name())
+                .build();
 
     }
 
     @Override
-    public void returnBorrowedBook(Long borrowedBookId) {
+    public BookResponseDto returnBorrowedBook(Long borrowedBookId) {
 
+        return null;
     }
 }

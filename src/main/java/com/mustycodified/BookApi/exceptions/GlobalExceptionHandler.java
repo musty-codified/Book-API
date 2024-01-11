@@ -28,6 +28,22 @@ public class GlobalExceptionHandler {
         LOGGER.error(ex.getMessage());
         return new ApiResponse<>("Error: "+ex.getMessage(), false,null);
     }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ApiResponse<String> handleAuthenticationException(AuthenticationException ex){
+        LOGGER.error(ex.getMessage());
+        return new ApiResponse<>("Error: "+ex.getMessage(), false,null);
+    }
+
+    @ExceptionHandler(UnavailableException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ApiResponse<String> handleUnavailableException(UnavailableException ex){
+        LOGGER.error(ex.getMessage());
+        return new ApiResponse<>("Error: "+ex.getMessage(), false,null);
+    }
     @ExceptionHandler(value = Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody

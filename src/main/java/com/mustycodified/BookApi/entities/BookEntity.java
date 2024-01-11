@@ -1,6 +1,7 @@
 package com.mustycodified.BookApi.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class BookEntity extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String author;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String isbn;
 
     @Column(nullable = false)
@@ -33,6 +34,7 @@ public class BookEntity extends BaseEntity {
     private int quantity;
 
     @OneToMany(mappedBy = "bookEntity", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<BorrowedBookEntity> borrowedBooks;
     @ManyToOne
     private UserEntity user;

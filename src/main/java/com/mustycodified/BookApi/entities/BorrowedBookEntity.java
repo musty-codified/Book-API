@@ -1,6 +1,7 @@
 package com.mustycodified.BookApi.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,10 +15,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "borrowed_books")
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BorrowedBookEntity extends BaseEntity{
-
-
-    private String borrowerName;
 
     private String borrowedBookStatus;
     @ManyToOne(fetch = FetchType.LAZY)
