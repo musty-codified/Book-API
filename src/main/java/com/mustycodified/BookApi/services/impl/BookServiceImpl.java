@@ -118,6 +118,14 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDto returnBorrowedBook(Long borrowedBookId) {
 
-        return null;
+         BorrowedBookEntity borrowedBook = borrowedBookRepository.findById(borrowedBookId)
+                 .orElseThrow(()->new NotFoundException("Borrowed book not found"));
+
+      BookEntity bookEntity = borrowedBook.getBookEntity();
+      bookEntity.setQuantity(bookEntity.getQuantity() + 1);
+       BookEntity updatedBook = bookRepository.save(bookEntity);
+      borrowedBookRepository.delete(borrowedBook);
+
+        return appUtil.getMapper().convertValue(updatedBook, BookResponseDto.class);
     }
 }

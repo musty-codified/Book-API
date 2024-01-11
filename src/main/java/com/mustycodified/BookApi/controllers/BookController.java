@@ -48,4 +48,9 @@ public class BookController {
     public ResponseEntity<ApiResponse<BookResponseDto>> borrowBook( @PathVariable Long bookId, @PathVariable Long userId){
         return ResponseEntity.ok().body( new ApiResponse<>("Success", true, bookService.borrowBook(bookId, userId)));
     }
+
+    @PostMapping("/return/{borrowedBookId}")
+    public ResponseEntity<ApiResponse<BookResponseDto>> returnBook( @PathVariable Long borrowedBookId){
+        return ResponseEntity.ok().body( new ApiResponse<>("Success", true, bookService.returnBorrowedBook(borrowedBookId)));
+    }
 }
