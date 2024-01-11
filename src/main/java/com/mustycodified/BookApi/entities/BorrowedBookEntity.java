@@ -16,14 +16,14 @@ import javax.persistence.*;
 @Builder
 public class BorrowedBookEntity extends BaseEntity{
 
-    private String isbn;
-    private String borrowerName;
-    private boolean returned = false;
-    @ManyToOne
-    private BookEntity bookEntity;
 
-    @ManyToOne
-    private  UserEntity user;
+    private String borrowerName;
+
+    private String borrowedBookStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private BookEntity bookEntity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserEntity user;
 
 
 }

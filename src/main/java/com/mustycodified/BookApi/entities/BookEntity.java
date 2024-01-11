@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,7 +16,6 @@ import javax.persistence.*;
 @Table(name = "books")
 @Builder
 public class BookEntity extends BaseEntity {
-
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -26,11 +26,15 @@ public class BookEntity extends BaseEntity {
     @Column(nullable = false)
     private String isbn;
 
-    private boolean available = false;
+    @Column(nullable = false)
+    private String bookStatus;
 
     @Column(nullable = false)
     private int quantity;
 
+    @OneToMany(mappedBy = "bookEntity", cascade = CascadeType.REMOVE)
+    private List<BorrowedBookEntity> borrowedBooks;
     @ManyToOne
     private UserEntity user;
+
 }

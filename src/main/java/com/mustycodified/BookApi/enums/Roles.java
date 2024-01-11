@@ -1,6 +1,5 @@
 package com.mustycodified.BookApi.enums;
 
-
 import com.google.common.collect.Sets;
 
 import java.util.Set;
