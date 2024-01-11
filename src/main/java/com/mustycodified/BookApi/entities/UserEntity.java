@@ -6,8 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
-
+import java.util.List;
 
 @Builder
 @Data
@@ -15,13 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class UserEntity{
-
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long id;
+public class UserEntity extends BaseEntity{
 
     @Column(nullable = false, unique = true)
     private String uuid;
@@ -39,6 +34,12 @@ public class UserEntity{
     private String email;
 
     private Date lastLoginDate;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<BookEntity> books = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<BorrowedBookEntity> borrowedBooks = new ArrayList<>();
 
     private String roles;
 

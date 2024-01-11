@@ -30,6 +30,7 @@ public class WebSecurity {
             "/",
             "/api/v1/auth/login",
             "/api/v1/users/**",
+            "/api/v1/books/**",
             "/h2-console/**",
             "/v3/api-docs/**",
             "/configuration/**",

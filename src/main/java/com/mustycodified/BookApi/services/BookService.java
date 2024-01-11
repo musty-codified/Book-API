@@ -11,7 +11,7 @@ public interface BookService {
     BookResponse createBook(BookRequest bookRequest);
     BookResponse editBook(Long id, BookRequest updatedBook);
     void deleteBook(Long id);
-    void borrowBook(Long bookId, String borrowerName);
+    void borrowBook(String isbn, String borrowerName);
     void returnBorrowedBook(Long borrowedBookId);
 
 }
