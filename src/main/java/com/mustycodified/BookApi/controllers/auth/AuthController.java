@@ -20,8 +20,4 @@ public class AuthController {
         return ResponseEntity.ok().body( new ApiResponse<>("login successful", true, userService.login(loginDto)));
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse<UserResponseDto>> getUser(@PathVariable (name = "userId") String userId){
-        return ResponseEntity.ok().body( new ApiResponse<>("Retrieved successfully", true, userService.findUser(userId)));
-    }
 }

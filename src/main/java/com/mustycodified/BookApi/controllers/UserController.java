@@ -28,5 +28,9 @@ public class UserController {
         return ResponseEntity.created(location).body(new ApiResponse<>("Signup successful", true, userResponseDto));
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<ApiResponse<UserResponseDto>> getUser(@PathVariable (name = "userId") String userId){
+        return ResponseEntity.ok().body( new ApiResponse<>("Retrieved successfully", true, userService.findUser(userId)));
+    }
 
 }

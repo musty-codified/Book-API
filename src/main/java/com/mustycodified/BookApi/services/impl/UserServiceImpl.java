@@ -46,11 +46,15 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByEmail(userDto.getEmail()))
             throw new ValidationException("User already exists");
 
-        UserEntity newUser = appUtil.getMapper().convertValue(userDto, UserEntity.class);
-        newUser.setUuid(appUtil.generateSerialNumber("usr"));
-        newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        newUser.setRoles(Roles.ROLE_USER.getAuthorities().stream()
-                .map(Objects::toString).collect(Collectors.joining(",")));
+        UserEntity newUser = UserEntity.builder()
+                .email(userDto.getEmail())
+                .firstName(userDto.getFirstName())
+                .lastName(userDto.getLastName())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+                .roles(Roles.ROLE_USER.getAuthorities().stream().map(Objects::toString
+                ).collect(Collectors.joining("")))
+                .uuid(appUtil.generateSerialNumber("usr"))
+                .build();
 
         newUser = userRepository.save(newUser);
         return appUtil.getMapper().convertValue(newUser, UserResponseDto.class);
