@@ -63,11 +63,14 @@ public class JwtUtils {
         }
 
         public String generateToken(UserDetails userDetails) {
+
             Map<String, Object> claims = new HashMap<>();
             UserEntity user = userRepository.findByEmail(userDetails.getUsername())
                     .orElseThrow(() -> new ValidationException("error generating token"));
             claims.put("userId", user.getUuid());
             claims.put("roles", userDetails.getAuthorities().stream().map(Objects::toString)
+                    .collect(Collectors.joining(",")));
+            System.out.println(userDetails.getAuthorities().stream().map(Objects::toString)
                     .collect(Collectors.joining(",")));
            return createToken(claims, userDetails.getUsername());
         }

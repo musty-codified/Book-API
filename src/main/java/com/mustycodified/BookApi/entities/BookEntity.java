@@ -36,7 +36,7 @@ public class BookEntity extends BaseEntity {
     @OneToMany(mappedBy = "bookEntity", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<BorrowedBookEntity> borrowedBooks;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
 }

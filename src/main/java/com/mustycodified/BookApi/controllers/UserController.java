@@ -18,15 +18,15 @@ import java.net.URI;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserResponseDto>>registerUser(@Valid @RequestBody RegisterUserDto userDto){
-        UserResponseDto userResponseDto = userService.registerUser(userDto);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{uuid}")
-                .buildAndExpand(userResponseDto.getUuid())
-                .toUri();
-        return ResponseEntity.created(location).body(new ApiResponse<>("Signup successful", true, userResponseDto));
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<ApiResponse<UserResponseDto>>registerUser(@Valid @RequestBody RegisterUserDto userDto){
+//        UserResponseDto userResponseDto = userService.registerUser(userDto);
+//        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+//                .path("/{uuid}")
+//                .buildAndExpand(userResponseDto.getUuid())
+//                .toUri();
+//        return ResponseEntity.created(location).body(new ApiResponse<>("Signup successful", true, userResponseDto));
+//    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse<UserResponseDto>> getUser(@PathVariable (name = "userId") String userId){

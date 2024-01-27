@@ -21,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                .roles(Roles.ROLE_USER.getAuthorities().stream().map(Objects::toString
+                .roles(Roles.USER.getAuthorities().stream().map(Objects::toString
                 ).collect(Collectors.joining(" , ")))
                 .uuid(appUtil.generateSerialNumber("usr"))
                 .build();
@@ -62,6 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponseDto login(UserLoginDto loginDto) {
 
         try{
@@ -72,10 +74,13 @@ public class UserServiceImpl implements UserService {
             if (authentication.isAuthenticated()){
              UserEntity user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(()-> new BadCredentialsException("Invalid Login details"));
 
-                log.info("Generating access token.....");
+                log.info("Generating access token...");
             String accessToken = jwtUtil.generateToken(customUserDetailsService.loadUserByUsername(user.getEmail()));
-         userResponseDto = appUtil.getMapper().convertValue(user, UserResponseDto.class);
-         userResponseDto.setToken(accessToken);
+                log.info("Access token :" + accessToken);
+
+                userResponseDto = appUtil.getMapper().convertValue(user, UserResponseDto.class);
+                appUtil.print(userResponseDto);
+                userResponseDto.setToken(accessToken);
             } else {
                 throw new BadCredentialsException("Invalid email or password");
             }
@@ -89,6 +94,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponseDto findUser(String userId) {
       UserEntity user = userRepository.findByUuid(userId)
                 .orElseThrow(()-> new NotFoundException("User not found"));
