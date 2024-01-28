@@ -3,6 +3,7 @@ package com.mustycodified.BookApi.routes;
 import com.mustycodified.BookApi.dtos.requests.RegisterUserDto;
 import com.mustycodified.BookApi.dtos.response.ApiResponse;
 import com.mustycodified.BookApi.dtos.response.UserResponseDto;
+import com.mustycodified.BookApi.processors.CreateResponseProcessor;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
@@ -36,8 +37,9 @@ public class UserRoute extends RouteBuilder {
                 .unmarshal().json(JsonLibrary.Jackson, RegisterUserDto.class)
                 .log(LoggingLevel.INFO, "Received body {$body}")
                 .bean("userServiceImpl", "registerUser(${body})")
+                .setHeader("operation", constant("registered user"))
                 .process(this::extractUriAndAddToResponseHeaders)
-                .process(this::extractResponseDtoAndMapToApiResponse)
+                .process(new CreateResponseProcessor<>(UserResponseDto.class))
                 .process(exchange -> {
                     exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.CREATED.value());
                 })
@@ -45,9 +47,9 @@ public class UserRoute extends RouteBuilder {
                 .end();
 
         from("direct:get-user")
-                .log(LoggingLevel.INFO, "Received body {$userId}")
+                .log(LoggingLevel.INFO, "Received id {${header.userId}}")
                 .bean("userServiceImpl", "findUser(${header.userId})")
-                .process(this::extractResponseDtoAndMapToApiResponse)
+                .process(new CreateResponseProcessor<>(UserResponseDto.class))
                 .process(exchange -> {
                     exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.OK.value());
                 })
@@ -65,12 +67,4 @@ public class UserRoute extends RouteBuilder {
         exchange.getMessage().setHeader("location", location);
     }
 
-    public void extractResponseDtoAndMapToApiResponse(Exchange exchange) {
-      UserResponseDto responseDto =  exchange.getIn().getBody(UserResponseDto.class);
-      ApiResponse<UserResponseDto> apiResponse = new ApiResponse<>();
-      apiResponse.setData(responseDto);
-      apiResponse.setStatus(true);
-      apiResponse.setMessage("Successfully registered");
-      exchange.getMessage().setBody(apiResponse);
-    }
 }

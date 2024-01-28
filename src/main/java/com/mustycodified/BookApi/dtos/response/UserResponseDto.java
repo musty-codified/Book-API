@@ -22,5 +22,4 @@ public class UserResponseDto {
 
     private String token;
 
-    private List<BookResponseDto> bookResponseDtos;
 }

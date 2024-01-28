@@ -36,7 +36,8 @@ public class WebSecurity {
             "/book-api/v1/auth/login",
 //            "/api/v1/users/register",
             "/book-api/v1/users/register",
-            "/book-api/v1/users/{userId}"
+            "/book-api/v1/users/{userId}",
+            "/book-api/v1/books/add"
     };
 
     @Bean
