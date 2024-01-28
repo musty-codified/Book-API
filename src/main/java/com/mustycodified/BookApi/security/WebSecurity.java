@@ -37,7 +37,10 @@ public class WebSecurity {
 //            "/api/v1/users/register",
             "/book-api/v1/users/register",
             "/book-api/v1/users/{userId}",
-            "/book-api/v1/books/add"
+            "/book-api/v1/books/add",
+            "/book-api/v1/books",
+            "/book-api/v1/books/{id}",
+            "/book-api/v1/books/delete/{id}"
     };
 
     @Bean
@@ -46,8 +49,6 @@ public class WebSecurity {
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers(WHITE_LISTED_URLS).permitAll()
-//                .antMatchers( "/api/v1/books/**")
-//                .hasRole("USER")
                 .antMatchers(HttpMethod.POST, "/api/v1/books/**").hasRole("AUTHOR")
                 .antMatchers(HttpMethod.PUT, "/api/v1/books/**").hasRole("AUTHOR")
                 .antMatchers(HttpMethod.DELETE, "/api/v1/books/**").hasRole("AUTHOR")

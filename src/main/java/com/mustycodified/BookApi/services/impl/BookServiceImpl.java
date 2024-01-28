@@ -18,6 +18,7 @@ import com.mustycodified.BookApi.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,6 +81,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void deleteBook(Long id) {
         BookEntity book = bookRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("Book not found"));

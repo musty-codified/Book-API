@@ -2,7 +2,6 @@ package com.mustycodified.BookApi.exceptions;
 
 public class NotFoundException extends RuntimeException{
 
-
     private String debugMessage;
     public NotFoundException( ) {
         super();
