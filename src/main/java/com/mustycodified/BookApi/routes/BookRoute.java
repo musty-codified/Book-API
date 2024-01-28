@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Objects;
+
 @Component
 @AllArgsConstructor
 public class BookRoute extends RouteBuilder {
@@ -30,6 +33,7 @@ public class BookRoute extends RouteBuilder {
                 .outType(BookResponseDto.class)
                 .to("direct:create-book")
 
+                // Needs fixing
                 .get()
                 .description("Retrieve list of books REST API")
                 .produces(MediaType.APPLICATION_JSON_VALUE)
@@ -45,13 +49,32 @@ public class BookRoute extends RouteBuilder {
                 .delete("delete/{id}")
                 .description("Delete book REST API")
                 .produces(MediaType.APPLICATION_JSON_VALUE)
-                .to("direct:delete-book");
+                .to("direct:delete-book")
+
+                .put("/edit/{id}")
+                .description("Edit book REST API")
+                .consumes(MediaType.APPLICATION_JSON_VALUE)
+                .produces(MediaType.APPLICATION_JSON_VALUE)
+                .to("direct:edit-book")
+
+                .post("/borrow/{id}/{userId}")
+                .description("Borrow book REST API")
+                .consumes(MediaType.APPLICATION_JSON_VALUE)
+                .produces(MediaType.APPLICATION_JSON_VALUE)
+                .to("direct:borrow-book")
+
+                .post("/return/{borrowedBookId}")
+                .description("Return book REST API")
+                .consumes(MediaType.APPLICATION_JSON_VALUE)
+                .produces(MediaType.APPLICATION_JSON_VALUE)
+                .to("direct:return-book");
+
 
         from("direct:create-book")
                 .log(LoggingLevel.INFO, "Received body {$body}")
                 .unmarshal().json(JsonLibrary.Jackson, BookRequestDto.class)
                 .bean("bookServiceImpl", "createBook(${body})")
-                .setHeader("operation", constant("created book"))
+                .setHeader("operationName", constant("created book"))
                 .process(new CreateResponseProcessor<>(BookResponseDto.class))
                 .process(exchange -> exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.CREATED.value()))
                 .marshal().json()
@@ -60,7 +83,7 @@ public class BookRoute extends RouteBuilder {
         from("direct:get-book")
                 .log(LoggingLevel.INFO, "Received id {${header.id}}")
                 .bean("bookServiceImpl", "getBookById(${header.id})")
-                .setHeader("operation", constant("Retrieved single book"))
+                .setHeader("operationName", constant("Retrieved single book"))
                 .process(new CreateResponseProcessor<>(BookResponseDto.class))
                 .process(exchange -> exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.OK.value()))
                 .marshal().json()
@@ -68,17 +91,47 @@ public class BookRoute extends RouteBuilder {
 
         from("direct:get-all-books")
                 .bean("bookServiceImpl", "getAllBooks")
-                .setHeader("operation", constant("Retrieved all books"))
+                .setHeader("operationName", constant("Retrieved all books"))
                 .process(new CreateResponseProcessor<>(BookResponseDto.class))
                 .process(exchange -> exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.OK.value()))
                 .marshal().json()
                 .end();
+
 
         from("direct:delete-book")
                 .log(LoggingLevel.INFO, "Received id {${header.id}}")
                 .bean("bookServiceImpl", "deleteBook(${header.id})")
                 .process(exchange -> exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.NO_CONTENT.value()))
                 .end();
+
+        from("direct:edit-book")
+                .log(LoggingLevel.INFO, "Received parameters {${header.id}, ${body}}")
+                .unmarshal().json(JsonLibrary.Jackson, BookRequestDto.class)
+                .bean("bookServiceImpl", "editBook(${header.id}, ${body})")
+                .setHeader("operationName", constant("Edited book"))
+                .process(new CreateResponseProcessor<>(BookResponseDto.class))
+                .process(exchange -> exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.OK.value()))
+                .marshal().json()
+                .end();
+
+
+        from("direct:borrow-book")
+                .log(LoggingLevel.INFO, "Received parameters {${header.id}, ${header.userId}}")
+                .bean("bookServiceImpl", "borrowBook(${header.id}, ${header.userId})")
+                .setHeader("operationName", constant("Borrowed a book"))
+                .process(new CreateResponseProcessor<>(BookResponseDto.class))
+                .process(exchange -> exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.OK.value()))
+                .end();
+
+        from("direct:return-book")
+                .log(LoggingLevel.INFO, "Received parameters {${header.borrowedBookId}}")
+                .bean("bookServiceImpl", "returnBorrowedBook(${header.borrowedBookId})")
+                .setHeader("operationName", constant("Returned a book"))
+                .process(new CreateResponseProcessor<>(BookResponseDto.class))
+                .process(exchange -> exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.OK.value()))
+                .end();
+
+
 
     }
 

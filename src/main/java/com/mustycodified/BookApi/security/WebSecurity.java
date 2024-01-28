@@ -19,8 +19,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
@@ -40,7 +38,10 @@ public class WebSecurity {
             "/book-api/v1/books/add",
             "/book-api/v1/books",
             "/book-api/v1/books/{id}",
-            "/book-api/v1/books/delete/{id}"
+            "/book-api/v1/books/delete/{id}",
+            "/book-api/v1/books/borrow/{id}/{userId}",
+            "/book-api/v1/books/return/{bookId}",
+            "/book-api/v1/books/edit/{id}"
     };
 
     @Bean

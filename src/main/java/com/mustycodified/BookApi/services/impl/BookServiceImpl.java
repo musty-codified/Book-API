@@ -120,6 +120,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookResponseDto returnBorrowedBook(Long borrowedBookId) {
 
          BorrowedBookEntity borrowedBook = borrowedBookRepository.findById(borrowedBookId)
