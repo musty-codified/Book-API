@@ -1,7 +1,6 @@
 package com.mustycodified.BookApi.routes;
 
 import com.mustycodified.BookApi.dtos.requests.RegisterUserDto;
-import com.mustycodified.BookApi.dtos.response.ApiResponse;
 import com.mustycodified.BookApi.dtos.response.UserResponseDto;
 import com.mustycodified.BookApi.processors.CreateResponseProcessor;
 import org.apache.camel.Exchange;

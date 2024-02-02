@@ -1,6 +1,5 @@
 package com.mustycodified.BookApi.security;
 
-import com.mustycodified.BookApi.enums.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,17 +30,9 @@ public class WebSecurity {
 
     private static final String [] WHITE_LISTED_URLS = {
             "/",
+            "/actuator",
             "/book-api/v1/auth/login",
-//            "/api/v1/users/register",
             "/book-api/v1/users/register",
-            "/book-api/v1/users/{userId}",
-            "/book-api/v1/books/add",
-            "/book-api/v1/books",
-            "/book-api/v1/books/{id}",
-            "/book-api/v1/books/delete/{id}",
-            "/book-api/v1/books/borrow/{id}/{userId}",
-            "/book-api/v1/books/return/{bookId}",
-            "/book-api/v1/books/edit/{id}"
     };
 
     @Bean
@@ -50,11 +41,6 @@ public class WebSecurity {
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers(WHITE_LISTED_URLS).permitAll()
-                .antMatchers(HttpMethod.POST, "/api/v1/books/**").hasRole("AUTHOR")
-                .antMatchers(HttpMethod.PUT, "/api/v1/books/**").hasRole("AUTHOR")
-                .antMatchers(HttpMethod.DELETE, "/api/v1/books/**").hasRole("AUTHOR")
-                .antMatchers(HttpMethod.GET, "/api/v1/books/**").hasRole("USER")
-                .antMatchers(HttpMethod.GET, "/api/v1/users/**").hasRole("USER")
                 .anyRequest()
                 .authenticated()
                 .and()

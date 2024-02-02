@@ -11,7 +11,6 @@ public enum Roles {
     USER(Sets.newHashSet(USER_READ, USER_EDIT, BOOK_READ, BOOK_BORROW, BOOK_RETURN)),
     AUTHOR(Sets.newHashSet(USER_READ, USER_EDIT, BOOK_READ, BOOK_EDIT));
 
-
     public final Set<Authorities> authorities;
     Roles(Set<Authorities> authorities) {
         this.authorities =authorities;
