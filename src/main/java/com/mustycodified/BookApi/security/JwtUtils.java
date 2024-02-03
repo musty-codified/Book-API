@@ -1,6 +1,6 @@
 package com.mustycodified.BookApi.security;
 
-import com.mustycodified.BookApi.entities.UserEntity;
+import com.mustycodified.BookApi.entities.User;
 import com.mustycodified.BookApi.exceptions.ValidationException;
 import com.mustycodified.BookApi.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -65,7 +65,7 @@ public class JwtUtils {
         public String generateToken(UserDetails userDetails) {
 
             Map<String, Object> claims = new HashMap<>();
-            UserEntity user = userRepository.findByEmail(userDetails.getUsername())
+            User user = userRepository.findByEmail(userDetails.getUsername())
                     .orElseThrow(() -> new ValidationException("error generating token"));
             claims.put("userId", user.getUuid());
             claims.put("roles", userDetails.getAuthorities().stream().map(Objects::toString)

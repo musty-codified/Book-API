@@ -2,10 +2,10 @@ package com.mustycodified.BookApi.services.impl;
 
 
 import com.mustycodified.BookApi.dtos.response.BorrowedBookResponseDto;
-import com.mustycodified.BookApi.entities.BookEntity;
-import com.mustycodified.BookApi.entities.BorrowedBookEntity;
+import com.mustycodified.BookApi.entities.Book;
+import com.mustycodified.BookApi.entities.BorrowedBook;
 import com.mustycodified.BookApi.entities.Transaction;
-import com.mustycodified.BookApi.entities.UserEntity;
+import com.mustycodified.BookApi.entities.User;
 import com.mustycodified.BookApi.enums.BorrowedBookStatus;
 import com.mustycodified.BookApi.enums.TransactionStatus;
 import com.mustycodified.BookApi.enums.TransactionType;
@@ -30,9 +30,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public BorrowedBookResponseDto createBorrowedBook(BookEntity book, String email) {
+    public BorrowedBookResponseDto createBorrowedBook(Book book, String email) {
 
-        UserEntity user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(()-> new NotFoundException("User not found"));
 
         BigDecimal bookPrice = calculateCharge(book);
@@ -46,7 +46,7 @@ public class TransactionServiceImpl implements TransactionService {
                         .build());
 
         BigDecimal balance = userRepository.findByEmail(email)
-                .map(UserEntity::getWalletBalance).orElse(BigDecimal.ZERO);
+                .map(User::getWalletBalance).orElse(BigDecimal.ZERO);
 
         if (balance.compareTo(bookPrice) < 0)
             throw new ValidationException("Insufficient fund");
@@ -57,18 +57,17 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionRepository.save(transaction);
 
-        BorrowedBookEntity borrowedBook = BorrowedBookEntity.builder()
+        BorrowedBook borrowedBook = BorrowedBook.builder()
                 .bookEntity(book)
                 .user(user)
                 .borrowedBookStatus(BorrowedBookStatus.BORROWED.name())
+                .transaction(transaction)
                 .build();
-
         return appUtil.getMapper().convertValue(borrowedBook, BorrowedBookResponseDto.class);
     }
 
 
-
-    private BigDecimal calculateCharge(BookEntity book) {
+    private BigDecimal calculateCharge(Book book) {
         return book.getPrice().multiply(BigDecimal.valueOf(0.1));
     }
 }

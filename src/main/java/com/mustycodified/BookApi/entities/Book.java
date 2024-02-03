@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @Table(name = "books")
 @Builder
-public class BookEntity extends BaseEntity {
+public class Book extends BaseEntity {
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -40,8 +40,8 @@ public class BookEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "bookEntity", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private List<BorrowedBookEntity> borrowedBooks;
+    private List<BorrowedBook> borrowedBooks;
     @ManyToOne(fetch = FetchType.LAZY)
-    private UserEntity user;
+    private User user;
 
 }

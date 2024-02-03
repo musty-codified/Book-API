@@ -1,5 +1,5 @@
 package com.mustycodified.BookApi.security;
-import com.mustycodified.BookApi.entities.UserEntity;
+import com.mustycodified.BookApi.entities.User;
 import com.mustycodified.BookApi.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-      UserEntity user = userRepository.findByEmail(username)
+      User user = userRepository.findByEmail(username)
                 .orElseThrow(()-> new UsernameNotFoundException("User not found"));
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 Arrays.stream(user.getRoles().split(","))

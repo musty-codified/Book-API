@@ -3,7 +3,7 @@ package com.mustycodified.BookApi.services.impl;
 import com.mustycodified.BookApi.dtos.requests.RegisterUserDto;
 import com.mustycodified.BookApi.dtos.requests.UserLoginDto;
 import com.mustycodified.BookApi.dtos.response.UserResponseDto;
-import com.mustycodified.BookApi.entities.UserEntity;
+import com.mustycodified.BookApi.entities.User;
 import com.mustycodified.BookApi.enums.Roles;
 import com.mustycodified.BookApi.exceptions.AuthenticationException;
 import com.mustycodified.BookApi.exceptions.NotFoundException;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByEmail(userDto.getEmail()))
             throw new ValidationException("User already exists");
 
-        UserEntity newUser = UserEntity.builder()
+        User newUser = User.builder()
                 .email(userDto.getEmail())
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
             UserResponseDto userResponseDto;
             if (authentication.isAuthenticated()){
-             UserEntity user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(()-> new BadCredentialsException("Invalid Login details"));
+             User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(()-> new BadCredentialsException("Invalid Login details"));
 
                 log.info("Generating access token...");
             String accessToken = jwtUtil.generateToken(customUserDetailsService.loadUserByUsername(user.getEmail()));
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto findUser(String userId) {
-      UserEntity user = userRepository.findByUuid(userId)
+      User user = userRepository.findByUuid(userId)
                 .orElseThrow(()-> new NotFoundException("User not found"));
 
         return appUtil.getMapper().convertValue(user, UserResponseDto.class);

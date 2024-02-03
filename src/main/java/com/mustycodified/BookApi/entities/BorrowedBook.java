@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,16 +16,16 @@ import java.util.List;
 @Table(name = "borrowed_books")
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BorrowedBookEntity extends BaseEntity{
+public class BorrowedBook extends BaseEntity{
 
     private String borrowedBookStatus;
     @ManyToOne(fetch = FetchType.LAZY)
-    private BookEntity bookEntity;
+    private Book bookEntity;
     @ManyToOne(fetch = FetchType.LAZY)
-    private UserEntity user;
+    private User user;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Transaction> transaction;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Transaction transaction;
 
 
 }

@@ -3,8 +3,8 @@ package com.mustycodified.BookApi.services.impl;
 import com.mustycodified.BookApi.dtos.requests.BookRequestDto;
 import com.mustycodified.BookApi.dtos.response.BookResponseDto;
 import com.mustycodified.BookApi.dtos.response.BorrowedBookResponseDto;
-import com.mustycodified.BookApi.entities.BookEntity;
-import com.mustycodified.BookApi.entities.BorrowedBookEntity;
+import com.mustycodified.BookApi.entities.Book;
+import com.mustycodified.BookApi.entities.BorrowedBook;
 import com.mustycodified.BookApi.enums.BookStatus;
 import com.mustycodified.BookApi.exceptions.NotFoundException;
 import com.mustycodified.BookApi.exceptions.UnavailableException;
@@ -40,7 +40,7 @@ public class BookServiceImpl implements BookService {
     private final TransactionService transactionService;
     @Override
     public List<BookResponseDto> getAllBooks() {
-     List<BookEntity> books = bookRepository.findAll();
+     List<Book> books = bookRepository.findAll();
      List<BookResponseDto> bookResponses = books.stream()
             .map(bookEntity -> appUtil.getMapper().convertValue(bookEntity, BookResponseDto.class))
              .collect(Collectors.toList());
@@ -50,7 +50,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookResponseDto getBookById(Long id) {
-        BookEntity book = bookRepository.findById(id).orElseThrow(()-> new NotFoundException("Book not found"));
+        Book book = bookRepository.findById(id).orElseThrow(()-> new NotFoundException("Book not found"));
         return appUtil.getMapper().convertValue(book, BookResponseDto.class);
     }
 
@@ -59,7 +59,7 @@ public class BookServiceImpl implements BookService {
         if(bookRepository.existsByTitle(bookRequest.getTitle()))
             throw new ValidationException("book already exists");
 
-        BookEntity bookEntity = BookEntity.builder()
+        Book bookEntity = Book.builder()
                 .isbn(appUtil.generateSerialNumber("isbn"))
                 .quantity(bookRequest.getQuantity())
                 .bookStatus(BookStatus.AVAILABLE.name())
@@ -67,13 +67,13 @@ public class BookServiceImpl implements BookService {
                 .author(bookRequest.getAuthor())
                 .price(bookRequest.getPrice())
                 .build();
-           BookEntity newBook = bookRepository.save(bookEntity);
+           Book newBook = bookRepository.save(bookEntity);
         return appUtil.getMapper().convertValue(newBook, BookResponseDto.class);
     }
 
     @Override
     public BookResponseDto editBook(Long id, BookRequestDto updatedBook) {
-      BookEntity bookEntity = bookRepository.findById(id)
+      Book bookEntity = bookRepository.findById(id)
               .orElseThrow(()-> new NotFoundException("Book is not found"));
         bookEntity.setAuthor(updatedBook.getAuthor());
         bookEntity.setTitle(updatedBook.getTitle());
@@ -89,7 +89,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void deleteBook(Long id) {
-        BookEntity book = bookRepository.findById(id)
+        Book book = bookRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("Book not found"));
         if(!book.getBorrowedBooks().isEmpty())
             throw new ValidationException("Book deletion failed as book is currently borrowed");
@@ -99,7 +99,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookResponseDto borrowBook(Long bookId, String email) {
-       BookEntity bookEntity = bookRepository.findById(bookId)
+       Book bookEntity = bookRepository.findById(bookId)
                .orElseThrow(()-> new NotFoundException("Book not found"));
 
        if (bookEntity.getQuantity() <= 0)
@@ -107,11 +107,11 @@ public class BookServiceImpl implements BookService {
 //        bookEntity.setBookStatus(BookStatus.UNAVAILABLE.name());
 
         BorrowedBookResponseDto borrowedBook = transactionService.createBorrowedBook(bookEntity, email);
-        BorrowedBookEntity book = appUtil.getMapper().convertValue(borrowedBook, BorrowedBookEntity.class);
+        BorrowedBook book = appUtil.getMapper().convertValue(borrowedBook, BorrowedBook.class);
 
        borrowedBookRepository.save(book);
        bookEntity.setQuantity(bookEntity.getQuantity() - 1);
-      BookEntity updatedBookEntity = bookRepository.save(bookEntity);
+      Book updatedBookEntity = bookRepository.save(bookEntity);
 
         return appUtil.getMapper().convertValue(updatedBookEntity, BookResponseDto.class);
     }
@@ -120,12 +120,12 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public BookResponseDto returnBorrowedBook(Long borrowedBookId) {
 
-         BorrowedBookEntity borrowedBook = borrowedBookRepository.findById(borrowedBookId)
+         BorrowedBook borrowedBook = borrowedBookRepository.findById(borrowedBookId)
                  .orElseThrow(()->new NotFoundException("Borrowed book not found"));
 
-      BookEntity bookEntity = borrowedBook.getBookEntity();
+      Book bookEntity = borrowedBook.getBookEntity();
       bookEntity.setQuantity(bookEntity.getQuantity() + 1);
-       BookEntity updatedBook = bookRepository.save(bookEntity);
+       Book updatedBook = bookRepository.save(bookEntity);
       borrowedBookRepository.delete(borrowedBook);
 
         return appUtil.getMapper().convertValue(updatedBook, BookResponseDto.class);

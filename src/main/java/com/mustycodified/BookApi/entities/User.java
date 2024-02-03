@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class UserEntity extends BaseEntity{
+public class User extends BaseEntity{
 
     @Column(nullable = false, unique = true)
     private String uuid;
@@ -37,10 +37,10 @@ public class UserEntity extends BaseEntity{
     private Date lastLoginDate;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<BookEntity> books = new ArrayList<>();
+    private List<Book> books = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<BorrowedBookEntity> borrowedBooks = new ArrayList<>();
+    private List<BorrowedBook> borrowedBooks = new ArrayList<>();
 
     private String roles;
 

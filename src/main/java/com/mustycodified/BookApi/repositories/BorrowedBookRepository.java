@@ -1,8 +1,8 @@
 package com.mustycodified.BookApi.repositories;
 
-import com.mustycodified.BookApi.entities.BorrowedBookEntity;
+import com.mustycodified.BookApi.entities.BorrowedBook;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BorrowedBookRepository extends JpaRepository<BorrowedBookEntity, Long> {
+public interface BorrowedBookRepository extends JpaRepository<BorrowedBook, Long> {
 
 }
