@@ -2,7 +2,9 @@ package com.mustycodified.BookApi.dtos.response;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -10,10 +12,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BookResponseDto {
-    private Long id;
-    private String title;
-    private String author;
-    private int quantity;
+public class BorrowedBookResponseDto {
     private BigDecimal price;
 }

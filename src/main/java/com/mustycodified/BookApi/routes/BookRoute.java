@@ -116,7 +116,7 @@ public class BookRoute extends RouteBuilder {
                 .end();
 
         from("direct:borrow-book")
-                .log(LoggingLevel.INFO, "Received parameters {${header.id}, ${header.userId}}")
+                .log(LoggingLevel.INFO, "Received parameters {${header.id}, ${header.userId}")
                 .bean("bookServiceImpl", "borrowBook(${header.id}, ${header.userId})")
                 .setHeader("operationName", constant("Borrowed a book"))
                 .process(new CreateResponseProcessor<>(BookResponseDto.class))

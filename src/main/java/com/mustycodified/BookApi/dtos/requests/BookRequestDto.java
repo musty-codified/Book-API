@@ -3,17 +3,14 @@ package com.mustycodified.BookApi.dtos.requests;
 
 import lombok.*;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.*;
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Getter
 @Setter
-
 public class BookRequestDto {
 
     @NotBlank
@@ -25,4 +22,7 @@ public class BookRequestDto {
     @Min(1)
     @Max(10)
     private int quantity;
+
+    @NotNull
+    private BigDecimal price;
 }

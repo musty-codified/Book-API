@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -32,6 +33,10 @@ public class BookEntity extends BaseEntity {
 
     @Column(nullable = false)
     private int quantity;
+
+    @Column(nullable = false)
+    private BigDecimal price;
+
 
     @OneToMany(mappedBy = "bookEntity", cascade = CascadeType.REMOVE)
     @JsonIgnore

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +24,9 @@ public class BorrowedBookEntity extends BaseEntity{
     private BookEntity bookEntity;
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Transaction> transaction;
 
 
 }

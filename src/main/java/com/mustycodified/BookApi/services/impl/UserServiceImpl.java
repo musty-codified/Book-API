@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService {
                 .roles(Roles.USER.getAuthorities().stream().map(Objects::toString
                 ).collect(Collectors.joining(" , ")))
                 .uuid(appUtil.generateSerialNumber("usr"))
+                .walletBalance(BigDecimal.valueOf(5000))
                 .build();
 
         newUser = userRepository.save(newUser);

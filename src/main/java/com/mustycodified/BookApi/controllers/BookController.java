@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -45,8 +46,8 @@ public class BookController {
     }
 
     @PostMapping("/borrow/{bookId}/{userId}")
-    public ResponseEntity<ApiResponse<BookResponseDto>> borrowBook( @PathVariable Long bookId, @PathVariable Long userId){
-        return ResponseEntity.ok().body( new ApiResponse<>("Success", true, bookService.borrowBook(bookId, userId)));
+    public ResponseEntity<ApiResponse<BookResponseDto>> borrowBook(@PathVariable Long bookId, @PathVariable String email){
+        return ResponseEntity.ok().body( new ApiResponse<>("Success", true, bookService.borrowBook(bookId, email)));
     }
 
     @PostMapping("/return/{borrowedBookId}")

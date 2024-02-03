@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,5 +43,7 @@ public class UserEntity extends BaseEntity{
     private List<BorrowedBookEntity> borrowedBooks = new ArrayList<>();
 
     private String roles;
+
+    private BigDecimal walletBalance = BigDecimal.valueOf(5000);
 
 }
