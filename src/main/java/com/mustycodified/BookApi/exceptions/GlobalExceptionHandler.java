@@ -3,6 +3,7 @@ package com.mustycodified.BookApi.exceptions;
 import com.mustycodified.BookApi.dtos.response.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -19,38 +20,42 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
-
          Map<String, String> errors = new HashMap<>();
          ex.getBindingResult().getAllErrors().forEach((error)->{
          String fieldName =  ((FieldError)error).getField();
          String message = error.getDefaultMessage();
          errors.put(fieldName, message);
         });
-//        LOGGER.error(ex.getMessage());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST) ;
     }
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ApiResponse<String>> handleValidationException(ValidationException ex){
+    public ResponseEntity<Object> handleValidationException(ValidationException ex){
         LOGGER.error(ex.getMessage());
-        return ResponseEntity.ok().body(new ApiResponse<>("Error: " + ex.getMessage(), false,null)) ;
-    }
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public ApiResponse<String> handleNotFoundException(NotFoundException ex){
-        LOGGER.error(ex.getMessage());
-        return new ApiResponse<>("Error: "+ex.getMessage(), false,null);
+        return new ResponseEntity<>(new ApiResponse<>("Error: " + ex.getMessage(), false,null), new HttpHeaders(), HttpStatus.BAD_REQUEST) ;
     }
 
-    @ExceptionHandler(AuthenticationException.class)
+    @ExceptionHandler(DuplicateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleDuplicateException(DuplicateException ex){
+        LOGGER.error(ex.getMessage());
+        return new ResponseEntity<>(new ApiResponse<>("Error: " + ex.getMessage(), false,null), new HttpHeaders(), HttpStatus.CONFLICT) ;
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    @ResponseBody
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException ex){
+        LOGGER.error(ex.getMessage());
+        return new ResponseEntity<>(new ApiResponse<>("Error: " + ex.getMessage(), false, null ), new HttpHeaders(), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(CustomAuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
-    public ApiResponse<String> handleAuthenticationException(AuthenticationException ex){
+    public ApiResponse<String> handleCustomAuthenticationException(CustomAuthenticationException ex){
         LOGGER.error(ex.getMessage());
         return new ApiResponse<>("Error: "+ex.getMessage(), false,null);
     }

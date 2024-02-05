@@ -6,6 +6,7 @@ import com.mustycodified.BookApi.dtos.response.BorrowedBookResponseDto;
 import com.mustycodified.BookApi.entities.Book;
 import com.mustycodified.BookApi.entities.BorrowedBook;
 import com.mustycodified.BookApi.enums.BookStatus;
+import com.mustycodified.BookApi.exceptions.DuplicateException;
 import com.mustycodified.BookApi.exceptions.NotFoundException;
 import com.mustycodified.BookApi.exceptions.UnavailableException;
 import com.mustycodified.BookApi.exceptions.ValidationException;
@@ -57,7 +58,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDto createBook(BookRequestDto bookRequest) {
         if(bookRepository.existsByTitle(bookRequest.getTitle()))
-            throw new ValidationException("book already exists");
+            throw new DuplicateException("book already exists");
 
         Book bookEntity = Book.builder()
                 .isbn(appUtil.generateSerialNumber("isbn"))

@@ -5,9 +5,9 @@ import com.mustycodified.BookApi.dtos.requests.UserLoginDto;
 import com.mustycodified.BookApi.dtos.response.UserResponseDto;
 import com.mustycodified.BookApi.entities.User;
 import com.mustycodified.BookApi.enums.Roles;
-import com.mustycodified.BookApi.exceptions.AuthenticationException;
+import com.mustycodified.BookApi.exceptions.CustomAuthenticationException;
+import com.mustycodified.BookApi.exceptions.DuplicateException;
 import com.mustycodified.BookApi.exceptions.NotFoundException;
-import com.mustycodified.BookApi.exceptions.ValidationException;
 import com.mustycodified.BookApi.repositories.UserRepository;
 import com.mustycodified.BookApi.security.CustomUserDetailsService;
 import com.mustycodified.BookApi.security.JwtUtils;
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto registerUser(RegisterUserDto userDto) {
         if(userRepository.existsByEmail(userDto.getEmail()))
-            throw new ValidationException("User already exists");
+            throw new DuplicateException("User already exists");
 
         User newUser = User.builder()
                 .email(userDto.getEmail())
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
             return userResponseDto;
 
         } catch (Exception ex){
-            throw new AuthenticationException(ex.getMessage());
+            throw new CustomAuthenticationException(ex.getMessage());
 
         }
     }

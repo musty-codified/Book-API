@@ -1,12 +1,12 @@
 package com.mustycodified.BookApi.exceptions;
 
-public class AuthenticationException extends RuntimeException{
+public class CustomAuthenticationException extends RuntimeException{
     private String debugMessage;
-    public AuthenticationException() {
+    public CustomAuthenticationException() {
         super();
         this.debugMessage="Authentication failed";
     }
-    public AuthenticationException(String message){
+    public CustomAuthenticationException(String message){
         super(message);
         this.debugMessage=message;
     }

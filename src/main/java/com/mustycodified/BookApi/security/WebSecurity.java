@@ -31,6 +31,7 @@ public class WebSecurity {
             "/",
             "/actuator",
             "/book-api/v1/auth/login",
+            "/api/v1/auth/login",
             "/book-api/v1/users/register",
             "/api/v1/users/register"
     };
