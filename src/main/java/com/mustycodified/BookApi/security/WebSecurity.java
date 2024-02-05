@@ -3,7 +3,6 @@ package com.mustycodified.BookApi.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,6 +32,7 @@ public class WebSecurity {
             "/actuator",
             "/book-api/v1/auth/login",
             "/book-api/v1/users/register",
+            "/api/v1/users/register"
     };
 
     @Bean

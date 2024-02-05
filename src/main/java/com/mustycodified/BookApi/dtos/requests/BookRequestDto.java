@@ -22,7 +22,6 @@ public class BookRequestDto {
     @Min(1)
     @Max(10)
     private int quantity;
-
-    @NotNull
+    @NotNull(message = "Price is required")
     private BigDecimal price;
 }
