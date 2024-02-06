@@ -44,6 +44,6 @@ public class User extends BaseEntity{
 
     private String roles;
 
-    private BigDecimal walletBalance = BigDecimal.valueOf(5000);
+    private BigDecimal walletBalance;
 
 }

@@ -28,16 +28,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 
 public class BookServiceImpl implements BookService {
-
     private final BookRepository bookRepository;
     private final AppUtils appUtil;
-
-    private final UserRepository userRepository;
-
     private final BorrowedBookRepository borrowedBookRepository;
-
-    private final TransactionRepository transactionRepository;
-
     private final TransactionService transactionService;
     @Override
     public List<BookResponseDto> getAllBooks() {
@@ -104,15 +97,17 @@ public class BookServiceImpl implements BookService {
                .orElseThrow(()-> new NotFoundException("Book not found"));
 
        if (bookEntity.getQuantity() <= 0)
-           throw new UnavailableException("Book is not available at the moment");
+           throw new UnavailableException("Book is not in the shelf at the moment");
 //        bookEntity.setBookStatus(BookStatus.UNAVAILABLE.name());
-
+        System.out.println("Before book transaction");
         BorrowedBookResponseDto borrowedBook = transactionService.createBorrowedBook(bookEntity, email);
+        System.out.println("AFTER book transaction");
+
         BorrowedBook book = appUtil.getMapper().convertValue(borrowedBook, BorrowedBook.class);
 
        borrowedBookRepository.save(book);
        bookEntity.setQuantity(bookEntity.getQuantity() - 1);
-      Book updatedBookEntity = bookRepository.save(bookEntity);
+       Book updatedBookEntity = bookRepository.save(bookEntity);
 
         return appUtil.getMapper().convertValue(updatedBookEntity, BookResponseDto.class);
     }

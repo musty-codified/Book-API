@@ -27,20 +27,15 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final AppUtils appUtil;
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final AuthenticationManager authenticationManager;
-
     private final JwtUtils jwtUtil;
-
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
@@ -67,7 +62,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto login(UserLoginDto loginDto) {
-
         try{
             Authentication authentication = authenticationManager
                     .authenticate( new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));

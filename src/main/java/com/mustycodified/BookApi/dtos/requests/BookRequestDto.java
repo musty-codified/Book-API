@@ -13,15 +13,16 @@ import java.math.BigDecimal;
 @Setter
 public class BookRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "Title is required")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "Author is required")
     private String author;
 
     @Min(1)
     @Max(10)
     private int quantity;
+
     @NotNull(message = "Price is required")
     private BigDecimal price;
 }

@@ -1,6 +1,5 @@
 package com.mustycodified.BookApi.services.impl;
 
-
 import com.mustycodified.BookApi.dtos.response.BorrowedBookResponseDto;
 import com.mustycodified.BookApi.entities.Book;
 import com.mustycodified.BookApi.entities.BorrowedBook;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +48,8 @@ public class TransactionServiceImpl implements TransactionService {
         BigDecimal balance = userRepository.findByEmail(email)
                 .map(User::getWalletBalance).orElse(BigDecimal.ZERO);
 
+        appUtil.print(balance);
+
         if (balance.compareTo(bookPrice) < 0)
             throw new ValidationException("Insufficient fund");
 
@@ -66,8 +68,7 @@ public class TransactionServiceImpl implements TransactionService {
         return appUtil.getMapper().convertValue(borrowedBook, BorrowedBookResponseDto.class);
     }
 
-
     private BigDecimal calculateCharge(Book book) {
-        return book.getPrice().multiply(BigDecimal.valueOf(0.1));
+        return book.getPrice().divide(new BigDecimal(100), 2, RoundingMode.DOWN);
     }
 }

@@ -14,4 +14,5 @@ import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BorrowedBookResponseDto {
     private BigDecimal price;
+    private String email;
 }
